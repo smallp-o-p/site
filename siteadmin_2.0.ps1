@@ -1,5 +1,4 @@
 # Script made by William Tran-Viet at uOttawa :) 
-$siteadminexists = $false
 
 $elevated = ([Security.Principal.WindowsPrincipal] ` [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator) # black magic check on if script is running in elevated mode
 if($elevated -eq $false){ 
@@ -9,9 +8,9 @@ exit
 function checksiteadmin{ # checks if siteadmin exists already
     $op = Get-LocalUser | where-Object Name -eq "siteadmin" | Measure-Object # measures number of users named siteadmin 
     if ($op.Count -ne 0) {
-        $siteadminexists = $true 
+        retrun $false
     }
-    return $siteadminexists
+    return $true
 }
 
 function addUsers{ # takes input of usernames separated by commas, splits into array and iteratively adds each user.  
@@ -22,7 +21,7 @@ function addUsers{ # takes input of usernames separated by commas, splits into a
         [array]$Array = $users.Split(",") 
         foreach ($i in $Array){
             try{
-                Add-LocalGroupMember Administrators -Member UOTTAWA\$i -ErrorAction Stop # the exceptions for this command don't get caught without -ErrorAction Stop
+                Add-LocalGroupMember Administrators -Member OU\$i -ErrorAction Stop # the exceptions for this command don't get caught without -ErrorAction Stop
                 Write-Host "User $i added to local admin group." -ForegroundColor Green
             }
             catch [Microsoft.PowerShell.Commands.PrincipalNotFoundException] {
