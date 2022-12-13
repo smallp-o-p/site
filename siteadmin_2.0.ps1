@@ -8,7 +8,7 @@ exit
 function checksiteadmin{ # checks if siteadmin exists already
     $op = Get-LocalUser | where-Object Name -eq "siteadmin" | Measure-Object # measures number of users named siteadmin 
     if ($op.Count -ne 0) {
-        retrun $false
+        return $false
     }
     return $true
 }
